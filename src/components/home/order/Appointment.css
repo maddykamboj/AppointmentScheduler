@@ -1,0 +1,19 @@
+td {
+    height: 10px;
+    border: 1px solid black;
+    padding: 10px 10px;
+    background-color: #40a060;
+}
+
+.reserved {
+    background-color: red;
+}
+
+a {
+    color: black;
+}
+
+a.active {
+    color: orange;
+}
+

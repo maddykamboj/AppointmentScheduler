@@ -1,0 +1,18 @@
+nav {
+  background-color: #222;
+  color: white;
+  display: flex;
+  text-decoration: none;
+  padding: 30px 30px;
+  font-size: 1.2em;
+}
+
+nav a {
+    color: white;
+    padding: 10px 10px;
+}
+
+a.active {
+    color: orange;
+}
+
