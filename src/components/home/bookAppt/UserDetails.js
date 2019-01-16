@@ -4,20 +4,17 @@ import { browserHistory } from 'react-router';
 import axios from 'axios';
 
 class UserDetails extends React.Component {
-    componentDidMount()
-    {
-        axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-        const res =  axios.get('http://localhost:8080/appointments');
+    constructor(props) {
+        super(props);
+        axios.get('http://localhost:8080/appointments')
+        .then(res => {
+                this.setState({
+                name : res.data.name,
+                phoneNum: res.data.phoneNum
+            })
+    });
+   }
 
-        console.log('axios response');
-        console.log(res);
-
-    }
-
-    state = {
-        name: '',
-        phoneNum: ''
-    }
 
     handleNameChange = (e) => {
         this.setState({
@@ -34,10 +31,7 @@ class UserDetails extends React.Component {
 
     handleSubmit = (e) => {
        e.preventDefault();
-        console.log('form Submitted');
-        console.log(this.props);
-
-        this.props.addUserInfo(this.props.params.id, this.state.name, this.state.phoneNum)
+       this.props.addUserInfo(this.props.params.id, this.state.name, this.state.phoneNum)
         browserHistory.push('/reserve');
     }
 

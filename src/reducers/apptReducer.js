@@ -12,19 +12,11 @@ const initState = {
 
 const orderReducer = (state = initState,action) => {
 
-    console.log(`action id: ${action.id}`);
-
-
     let index = action.id - 1;
-
-    console.log('index');
-    console.log(index);
 
     switch(action.type) {
         case 'ADD_USER' :
-            console.log('Inside ADD_USER');
-
-            let newAppointments = state.appointments.filter(appointment => {
+                let newAppointments = state.appointments.filter(appointment => {
                 return  action.id = appointment.id
             });
             newAppointments[index].name = action.name
@@ -32,31 +24,10 @@ const orderReducer = (state = initState,action) => {
             newAppointments[index].reserved = true
         return {
             ...state,
-            appointments: newAppointments
-        }
+            appointments: newAppointments }
         default:
-            return initState;
-    }
+            return initState;}
 }
-
-
-
-
-//      //  debugger;
-        //         return [...state,
-        //         Object.assign({}, action.name, action.phoneNum)
-        // ];
-        //    return Object.assign({}, initState, {
-        //         appointments: initState.appointments.map(appointment => {
-        //             if (appointment.id !== action.id) {
-        //                 return appointment
-        //             }
-        //
-        //             return Object.assign({}, appointment, {
-        //                 name: action.name
-        //             })
-        //         })
-        //     })
 
 
 export default orderReducer;
