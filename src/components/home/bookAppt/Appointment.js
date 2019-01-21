@@ -1,27 +1,59 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import './Appointment.css';
+import UserDetails from './UserDetails';
+import {createActionClickedId} from "../actions/apptAction";
 
 class Appointment extends React.Component {
+    constructor(){
+        super()
+        this.state = {}
+        this.handleAppointmentClick = this.handleAppointmentClick.bind(this);
+        this.close.bind = this.close.bind(this);
+    }
+
+    show(){
+        document.querySelector('#modalDialog1').showModal();
+    }
+
+    close(){
+        this.setState({show: false})
+    }
+
+    handleAppointmentClick (id) {
+        this.props.clickedId(id);
+        this.show();
+    }
+
     render (){
         const {appointments} = this.props;
-        console.log('Print appts');
-        console.log(appointments);
-        return (
+          return (
             <div>
                 <h3> Select Appointment Slot: </h3>
-                <table>
-                    <tr>
-                        {appointments.appointments.map(appointment =>
-                            <Link  to={`/reserve/${appointment.id}`} activeClassName="active">
-                                <td className={appointment.reserved?'reserved':''}>{appointment.timeSlot}</td>
-                            </Link>
+                {appointments.appointments.map(appointment =>
+                    <table>
+                        <tr>
+                            <a onClick={()=> (this.handleAppointmentClick(appointment.id))} className={appointment.reserved?'reserved':''}>
+                                <td className={appointment.reserved?'reserved':''}>{appointment.timeSlot}</td></a>
+                        </tr>
+                    </table>
 
-                        )}
-                    </tr>
-                </table>
+                )}
+                <dialog id="modalDialog1"
+                        className="test-class"
+                        style={{background: 'white'}}
+                        containerStyle={{background: 'blue'}}
+                        containerClassName="test"
+                        closeOnOuterClick={true}
+                        show={this.show}
+                        onClose={this.close.bind(this)}>
+
+                    <a onClick={this.close.bind(this)}>X</a>
+
+                    <UserDetails />
+
+                </dialog>
             </div>
         );
     }
@@ -32,12 +64,20 @@ Appointment.propTypes = {
     appointments : PropTypes.array.isRequired
 };
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state, ownProps) =>{
     // debugger;
     return {
         appointments: state.appointments
     }
 }
 
+const mapDispatchToProps = dispatch => {
 
-export default connect(mapStateToProps)(Appointment);
+    return {
+        clickedId: (id) => {
+            console.log('CLICKED_ID',id);
+            dispatch (createActionClickedId(id))}
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Appointment);

@@ -2,6 +2,7 @@ import React  from 'react';
 import {connect} from 'react-redux';
 import { browserHistory } from 'react-router';
 import axios from 'axios';
+import {createActionAddUser} from "../actions/apptAction";
 
 class UserDetails extends React.Component {
     constructor(props) {
@@ -9,6 +10,7 @@ class UserDetails extends React.Component {
         axios.get('http://localhost:8080/appointments')
         .then(res => {
                 this.setState({
+                    ...props,
                 name : res.data.name,
                 phoneNum: res.data.phoneNum
             })
@@ -17,7 +19,7 @@ class UserDetails extends React.Component {
 
 
     handleNameChange = (e) => {
-        this.setState({
+           this.setState({
             name : e.target.value
         })
     }
@@ -28,40 +30,40 @@ class UserDetails extends React.Component {
         })
     }
 
-
     handleSubmit = (e) => {
        e.preventDefault();
-       this.props.addUserInfo(this.props.params.id, this.state.name, this.state.phoneNum)
-        browserHistory.push('/reserve');
+       this.props.addUserInfo(e.target.elements.id.value, this.state.name, this.state.phoneNum);
+       browserHistory.push('/reserve');
     }
 
     render () {
-
-        const {appointments} = this.props.appointments;
-        const timeSlot = appointments.find(timeSlot => timeSlot.id === Number(this.props.params.id))
+        const {appointments} = this.props;
+         const selectedSlot = appointments.appointments.filter( appt => { return appt.isIDSelected === true});
 
         return(
             <div>
                 <h3>Appointment Details: </h3>
+                { selectedSlot.map(slot =>
+                    <form onSubmit={this.handleSubmit}>
 
-
-                <form onSubmit={this.handleSubmit}>
                         <label>Full Name </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="text" name="name" placeholder={timeSlot.name} onChange={this.handleNameChange} />
+                        <input type="text" name="name" placeholder={slot.name} onChange={this.handleNameChange} />
                         <br/>
                         <label>Phone Number </label>&nbsp;
-                        <input type="text" name="phoneNumber" placeholder={timeSlot.phoneNum} onChange={this.handlePhoneNumChange} />
+                        <input type="text" name="phoneNumber" placeholder={slot.phoneNum} onChange={this.handlePhoneNumChange} />
                         <br/>
                         <br/>
+                        <input type="hidden" name="id" value={slot.id}/>
                         <button>Book Appointment</button>
+
                 </form>
+                )}
             </div>
         );
     }
 }
 
 function mapStateToProps(state) {
-
     return{
         appointments : state.appointments
           }
@@ -69,7 +71,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addUserInfo: (id,name, phoneNum) => {dispatch ({type: 'ADD_USER', id: id, name: name, phoneNum : phoneNum})}
+        addUserInfo: (id,name,phoneNum) => {dispatch (createActionAddUser(id, name,phoneNum))}
     }
 }
 

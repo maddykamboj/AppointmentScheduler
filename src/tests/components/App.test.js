@@ -1,3 +1,10 @@
+import React from 'react';
+import MemoryRouter from 'react-router-dom';
+import {create} from 'react-test-renderer';
+import mockStore from '../setup/redux-mock-store';
+import AboutPage from "../../components/home/about/AboutPage";
+
+
 const initState = {
     appointments: [{ id: 1,timeSlot: "9 am - 10 am", name: "First Last", phoneNum: "444-444-4444", reserved: false, isIDSelected: false },
         { id: 2,timeSlot: "10 am - 11 am", name: "First Last", phoneNum: "444-444-4444", reserved: false, isIDSelected: false },
@@ -7,32 +14,20 @@ const initState = {
         { id: 6,timeSlot: "2 pm - 3 pm", name: "First Last", phoneNum: "444-444-4444", reserved: false, isIDSelected: false },
         { id: 7,timeSlot: "3 pm - 4 pm", name: "First Last", phoneNum: "444-444-4444", reserved: false, isIDSelected: false },
         { id: 8,timeSlot: "4 pm - 5 pm", name: "First Last", phoneNum: "444-444-4444", reserved: false, isIDSelected: false }]
-    }
-
-
-const orderReducer = (state = initState,action) => {
-    let index = action.id - 1;
-    switch(action.type) {
-        case 'CLICKED_ID' :
-            let selectedAppointment = state.appointments.filter(appointment => {
-                return  action.id = appointment.id
-            });
-            selectedAppointment[index].isIDSelected = true;
-                return {
-                ...state,
-                    appointments: selectedAppointment }
-        case 'ADD_USER' :
-                let newAppointments = state.appointments.filter(appointment => {
-                return  action.id = appointment.id
-            });
-            newAppointments[index].name = action.name
-            newAppointments[index].phoneNum = action.phoneNum
-            newAppointments[index].reserved = true
-        return {
-            ...state,
-            appointments: newAppointments }
-        default:
-            return initState;}
 }
 
-export default orderReducer;
+    it('Component snapshot test ', () => {
+    const store = mockStore(initState);
+      const renderTest = create(
+    <Provider store={store}>
+        <MemoryRouter initialEntries={[{ pathname: '/about' }]} >
+          <AboutPage/>
+        </MemoryRouter>
+       </Provider>);
+      expect(renderTest.toJSON()).toMatchSnapshot();
+
+});
+
+it('should add numbers', () => {
+    expect(2+2).toBe(4);
+});
